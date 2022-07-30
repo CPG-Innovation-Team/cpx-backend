@@ -3,9 +3,13 @@ package data
 import (
 	userV1 "cpx/api/user/v1"
 	"cpx/app/mall/portal/internal/conf"
+	"github.com/go-kratos/kratos/contrib/registry/nacos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/google/wire"
+	"github.com/nacos-group/nacos-sdk-go/clients"
+	"github.com/nacos-group/nacos-sdk-go/common/constant"
+	"github.com/nacos-group/nacos-sdk-go/vo"
 )
 
 // ProviderSet is data providers.
@@ -13,6 +17,7 @@ var ProviderSet = wire.NewSet(
 	NewData,
 	NewUserRepo,
 	NewDiscovery,
+	NewRegistrar,
 )
 
 // Data .
@@ -28,25 +33,61 @@ func NewData(c *conf.Data, logger log.Logger, uc userV1.UserClient) (*Data, erro
 }
 
 func NewDiscovery(conf *conf.Registry) registry.Discovery {
-	c := nacos()
-	c.Address = conf.Consul.Address
-	c.Scheme = conf.Consul.Scheme
-	cli, err := consulAPI.NewClient(c)
+	sc := []constant.ServerConfig{
+		*constant.NewServerConfig(conf.Nacos.Address, 8848),
+	}
+
+	cc := &constant.ClientConfig{
+		NamespaceId:         "public",
+		TimeoutMs:           5000,
+		NotLoadCacheAtStart: true,
+		LogDir:              "/tmp/nacos/log",
+		CacheDir:            "/tmp/nacos/cache",
+		RotateTime:          "1h",
+		MaxAge:              3,
+		LogLevel:            "info",
+	}
+
+	cli, err := clients.NewNamingClient(
+		vo.NacosClientParam{
+			ClientConfig:  cc,
+			ServerConfigs: sc,
+		},
+	)
+
 	if err != nil {
 		panic(err)
 	}
-	r := consul.New(cli, consul.WithHealthCheck(false))
-	return r
+
+	return nacos.New(cli)
 }
 
 func NewRegistrar(conf *conf.Registry) registry.Registrar {
-	c := consulAPI.DefaultConfig()
-	c.Address = conf.Consul.Address
-	c.Scheme = conf.Consul.Scheme
-	cli, err := consulAPI.NewClient(c)
+	sc := []constant.ServerConfig{
+		*constant.NewServerConfig(conf.Nacos.Address, 8848),
+	}
+
+	cc := &constant.ClientConfig{
+		NamespaceId:         "public",
+		TimeoutMs:           5000,
+		NotLoadCacheAtStart: true,
+		LogDir:              "/tmp/nacos/log",
+		CacheDir:            "/tmp/nacos/cache",
+		RotateTime:          "1h",
+		MaxAge:              3,
+		LogLevel:            "info",
+	}
+
+	cli, err := clients.NewNamingClient(
+		vo.NacosClientParam{
+			ClientConfig:  cc,
+			ServerConfigs: sc,
+		},
+	)
+
 	if err != nil {
 		panic(err)
 	}
-	r := consul.New(cli, consul.WithHealthCheck(false))
-	return r
+
+	return nacos.New(cli)
 }
