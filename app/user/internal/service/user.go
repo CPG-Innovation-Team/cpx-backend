@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"cpx/api/user/v1"
+	"cpx-backend/api/user/v1"
 )
 
 type UserService struct {

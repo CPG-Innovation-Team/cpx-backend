@@ -3,7 +3,7 @@ package biz
 import (
 	"context"
 
-	v1 "cpx/api/user/v1"
+	v1 "cpx-backend/api/user/v1"
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 )

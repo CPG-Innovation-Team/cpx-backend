@@ -6,14 +6,13 @@
 package main
 
 import (
-	"cpx/app/user/internal/biz"
-	"cpx/app/user/internal/conf"
-	"cpx/app/user/internal/data"
-	"cpx/app/user/internal/server"
-	"cpx/app/user/internal/service"
+	"cpx-backend/app/user/internal/biz"
+	"cpx-backend/app/user/internal/conf"
+	"cpx-backend/app/user/internal/data"
+	"cpx-backend/app/user/internal/server"
+	"cpx-backend/app/user/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
-	"github.com/google/wire"
 )
 
 // wireApp init kratos application.

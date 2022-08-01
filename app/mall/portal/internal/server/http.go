@@ -1,16 +1,16 @@
 package server
 
 import (
-	v1 "portal/api/helloworld/v1"
-	"portal/internal/conf"
-	"portal/internal/service"
+	v1 "cpx-backend/api/mall/portal/v1"
+	"cpx-backend/app/mall/portal/internal/conf"
+	"cpx-backend/app/mall/portal/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/transport/http"
 )
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, portal *service.PortalService, logger log.Logger) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -26,6 +26,6 @@ func NewHTTPServer(c *conf.Server, greeter *service.GreeterService, logger log.L
 		opts = append(opts, http.Timeout(c.Http.Timeout.AsDuration()))
 	}
 	srv := http.NewServer(opts...)
-	v1.RegisterGreeterHTTPServer(srv, greeter)
+	v1.RegisterPortalHTTPServer(srv, portal)
 	return srv
 }

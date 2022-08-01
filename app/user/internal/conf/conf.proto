@@ -4,8 +4,6 @@ package kratos.api;
 option go_package = "user/internal/conf;conf";
 
 import "google/protobuf/duration.proto";
-//file:///Users/ethan/space/cpg/cpx/app/user/internal/third_party
-//file:///Users/ethan/space/cpg/cpx/third_party
 
 message Bootstrap {
   Server server = 1;

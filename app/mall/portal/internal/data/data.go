@@ -1,15 +1,18 @@
 package data
 
 import (
-	userV1 "cpx/api/user/v1"
-	"cpx/app/mall/portal/internal/conf"
+	v1 "cpx-backend/api/mall/portal/v1"
+	"cpx-backend/app/mall/portal/internal/conf"
 	"github.com/go-kratos/kratos/contrib/registry/nacos/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"github.com/google/wire"
 	"github.com/nacos-group/nacos-sdk-go/clients"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/vo"
+	"golang.org/x/net/context"
 )
 
 // ProviderSet is data providers.
@@ -18,18 +21,19 @@ var ProviderSet = wire.NewSet(
 	NewUserRepo,
 	NewDiscovery,
 	NewRegistrar,
+	NewUserServiceClient,
 )
 
 // Data .
 type Data struct {
 	log *log.Helper
-	uc  userV1.UserClient
+	pc  v1.PortalClient
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger, uc userV1.UserClient) (*Data, error) {
+func NewData(c *conf.Data, logger log.Logger, pc v1.PortalClient) (*Data, error) {
 	l := log.NewHelper(log.With(logger, "module", "data"))
-	return &Data{log: l, uc: uc}, nil
+	return &Data{log: l, pc: pc}, nil
 }
 
 func NewDiscovery(conf *conf.Registry) registry.Discovery {
@@ -90,4 +94,20 @@ func NewRegistrar(conf *conf.Registry) registry.Registrar {
 	}
 
 	return nacos.New(cli)
+}
+
+func NewUserServiceClient(r registry.Discovery) v1.PortalClient {
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		grpc.WithEndpoint("discovery:///mall.portal.service"),
+		grpc.WithDiscovery(r),
+		grpc.WithMiddleware(
+			recovery.Recovery(),
+		),
+	)
+	if err != nil {
+		panic(err)
+	}
+	c := v1.NewPortalClient(conn)
+	return c
 }

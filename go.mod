@@ -1,4 +1,4 @@
-module cpx
+module cpx-backend
 
 go 1.17
 

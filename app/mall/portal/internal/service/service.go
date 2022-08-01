@@ -1,18 +1,21 @@
 package service
 
 import (
-	v1 "cpx/api/mall/portal/v1"
-
+	v1 "cpx-backend/api/mall/portal/v1"
+	"cpx-backend/app/mall/portal/internal/biz"
 	"github.com/google/wire"
 )
 
 // ProviderSet is service providers.
-var ProviderSet = wire.NewSet(NewUserService)
+var ProviderSet = wire.NewSet(NewPortalService)
 
-type UserService struct {
-	v1.UnimplementedUserServer
+type PortalService struct {
+	v1.UnimplementedPortalServer
+	uc *biz.UserUseCase
 }
 
-func NewUserService() *UserService {
-	return &UserService{}
+func NewPortalService(uc *biz.UserUseCase) *PortalService {
+	return &PortalService{
+		uc: uc,
+	}
 }

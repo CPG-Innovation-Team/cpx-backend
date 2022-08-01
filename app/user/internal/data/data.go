@@ -1,10 +1,9 @@
 package data
 
 import (
-	"cpx/app/user/internal/conf"
+	"cpx-backend/app/user/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v8"
-	"github.com/google/wire"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	glogger "gorm.io/gorm/logger"

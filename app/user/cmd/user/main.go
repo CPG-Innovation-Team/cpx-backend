@@ -4,7 +4,7 @@ import (
 	"flag"
 	"os"
 
-	"cpx/app/user/internal/conf"
+	"cpx-backend/app/user/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"

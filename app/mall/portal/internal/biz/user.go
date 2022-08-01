@@ -5,7 +5,7 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 
-	v1 "cpx/api/mall/portal/v1"
+	v1 "cpx-backend/api/mall/portal/v1"
 )
 
 var (
@@ -25,6 +25,11 @@ type UserRepo interface {
 type UserUseCase struct {
 	ur  UserRepo
 	log *log.Helper
+}
+
+// NewUserUseCase new a user use case.
+func NewUserUseCase(ur UserRepo, logger log.Logger) *UserUseCase {
+	return &UserUseCase{ur: ur, log: log.NewHelper(logger)}
 }
 
 // RegisterUser creates a User, and returns the new User.
