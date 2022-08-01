@@ -7,11 +7,11 @@
 package main
 
 import (
-	"portal/internal/biz"
-	"portal/internal/conf"
-	"portal/internal/data"
-	"portal/internal/server"
-	"portal/internal/service"
+	"cpx-backend/app/mall/portal/internal/biz"
+	"cpx-backend/app/mall/portal/internal/conf"
+	"cpx-backend/app/mall/portal/internal/data"
+	"cpx-backend/app/mall/portal/internal/server"
+	"cpx-backend/app/mall/portal/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -19,18 +19,19 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+func wireApp(confServer *conf.Server, confData *conf.Data, registry *conf.Registry, logger log.Logger) (*kratos.App, func(), error) {
+	discovery := data.NewDiscovery(registry)
+	portalClient := data.NewUserServiceClient(discovery)
+	dataData, err := data.NewData(confData, logger, portalClient)
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
+	userRepo := data.NewUserRepo(dataData, logger)
+	userUseCase := biz.NewUserUseCase(userRepo, logger)
+	portalService := service.NewPortalService(userUseCase)
+	grpcServer := server.NewGRPCServer(confServer, portalService, logger)
+	httpServer := server.NewHTTPServer(confServer, portalService, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
-		cleanup()
 	}, nil
 }
