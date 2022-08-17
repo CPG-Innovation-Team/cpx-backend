@@ -5,7 +5,6 @@ import (
 
 	v1 "cpx-backend/api/user/v1"
 	"github.com/go-kratos/kratos/v2/errors"
-	"github.com/go-kratos/kratos/v2/log"
 )
 
 var (
@@ -24,14 +23,7 @@ type UpdateRepo interface {
 	Create(ctx context.Context)
 }
 
-// UserUsecase is a user usecase.
-type UserUsecase struct {
-	rr  RetrieveRepo
-	ur  UpdateRepo
-	log *log.Helper
-}
-
 // RegisterUser creates a User, and returns the new User.
-func (uc *UserUsecase) RegisterUser(ctx context.Context) error {
+func (uc *UserUseCase) RegisterUser(ctx context.Context) error {
 	return nil
 }

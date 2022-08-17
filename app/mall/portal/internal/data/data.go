@@ -1,7 +1,8 @@
 package data
 
 import (
-	v1 "cpx-backend/api/mall/portal/v1"
+	productV1 "cpx-backend/api/product/v1"
+	userV1 "cpx-backend/api/user/v1"
 	"cpx-backend/app/mall/portal/internal/conf"
 	"github.com/go-kratos/kratos/contrib/registry/nacos/v2"
 	"github.com/go-kratos/kratos/v2/log"
@@ -19,21 +20,29 @@ import (
 var ProviderSet = wire.NewSet(
 	NewData,
 	NewUserRepo,
+	NewProductRepo,
 	NewDiscovery,
 	NewRegistrar,
 	NewUserServiceClient,
+	NewProductServiceClient,
 )
 
 // Data .
 type Data struct {
 	log *log.Helper
-	pc  v1.PortalClient
+	pc  productV1.ProductClient
+	uc  userV1.UserClient
 }
 
 // NewData .
-func NewData(c *conf.Data, logger log.Logger, pc v1.PortalClient) (*Data, error) {
+func NewData(
+	c *conf.Data,
+	logger log.Logger,
+	pc productV1.ProductClient,
+	uc userV1.UserClient,
+) (*Data, error) {
 	l := log.NewHelper(log.With(logger, "module", "data"))
-	return &Data{log: l, pc: pc}, nil
+	return &Data{log: l, pc: pc, uc: uc}, nil
 }
 
 func NewDiscovery(conf *conf.Registry) registry.Discovery {
@@ -96,10 +105,10 @@ func NewRegistrar(conf *conf.Registry) registry.Registrar {
 	return nacos.New(cli)
 }
 
-func NewUserServiceClient(r registry.Discovery) v1.PortalClient {
+func NewUserServiceClient(r registry.Discovery) userV1.UserClient {
 	conn, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("discovery:///mall.portal.service"),
+		grpc.WithEndpoint("discovery:///mall.user.service"),
 		grpc.WithDiscovery(r),
 		grpc.WithMiddleware(
 			recovery.Recovery(),
@@ -108,6 +117,22 @@ func NewUserServiceClient(r registry.Discovery) v1.PortalClient {
 	if err != nil {
 		panic(err)
 	}
-	c := v1.NewPortalClient(conn)
+	c := userV1.NewUserClient(conn)
+	return c
+}
+
+func NewProductServiceClient(r registry.Discovery) productV1.ProductClient {
+	conn, err := grpc.DialInsecure(
+		context.Background(),
+		grpc.WithEndpoint("discovery:///mall.product.service"),
+		grpc.WithDiscovery(r),
+		grpc.WithMiddleware(
+			recovery.Recovery(),
+		),
+	)
+	if err != nil {
+		panic(err)
+	}
+	c := productV1.NewProductClient(conn)
 	return c
 }

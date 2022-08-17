@@ -18,12 +18,16 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 type PortalHTTPServer interface {
+	AddProduct(context.Context, *AddProductRequest) (*AddProductReply, error)
+	GetProductDetail(context.Context, *GetProductDetailRequest) (*GetProductDetailReply, error)
+	GetProductList(context.Context, *GetProductListRequest) (*GetProductListReply, error)
 	GetUserList(context.Context, *GetUserListRequest) (*GetUserListReply, error)
 	GetUserProfile(context.Context, *GetUserProfileRequest) (*UserProfileReply, error)
 	Login(context.Context, *LoginRequest) (*LoginReply, error)
 	Logout(context.Context, *LogoutRequest) (*LogoutReply, error)
 	Register(context.Context, *RegisterRequest) (*RegisterReply, error)
 	Update(context.Context, *UpdateRequest) (*UpdateReply, error)
+	UpdateProduct(context.Context, *UpdateProductRequest) (*UpdateProductReply, error)
 }
 
 func RegisterPortalHTTPServer(s *http.Server, srv PortalHTTPServer) {
@@ -34,6 +38,10 @@ func RegisterPortalHTTPServer(s *http.Server, srv PortalHTTPServer) {
 	r.PUT("/v1/user/update", _Portal_Update0_HTTP_Handler(srv))
 	r.GET("/v1/user/profile/{uid}", _Portal_GetUserProfile0_HTTP_Handler(srv))
 	r.POST("/v1/user/list", _Portal_GetUserList0_HTTP_Handler(srv))
+	r.POST("/v1/product/add", _Portal_AddProduct0_HTTP_Handler(srv))
+	r.POST("/v1/product/update", _Portal_UpdateProduct0_HTTP_Handler(srv))
+	r.GET("/v1/product/detail/{sku}", _Portal_GetProductDetail0_HTTP_Handler(srv))
+	r.POST("/v1/product/list", _Portal_GetProductList0_HTTP_Handler(srv))
 }
 
 func _Portal_Register0_HTTP_Handler(srv PortalHTTPServer) func(ctx http.Context) error {
@@ -153,13 +161,96 @@ func _Portal_GetUserList0_HTTP_Handler(srv PortalHTTPServer) func(ctx http.Conte
 	}
 }
 
+func _Portal_AddProduct0_HTTP_Handler(srv PortalHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in AddProductRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/mall.portal.v1.Portal/AddProduct")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.AddProduct(ctx, req.(*AddProductRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*AddProductReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Portal_UpdateProduct0_HTTP_Handler(srv PortalHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in UpdateProductRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/mall.portal.v1.Portal/UpdateProduct")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.UpdateProduct(ctx, req.(*UpdateProductRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*UpdateProductReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Portal_GetProductDetail0_HTTP_Handler(srv PortalHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetProductDetailRequest
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/mall.portal.v1.Portal/GetProductDetail")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetProductDetail(ctx, req.(*GetProductDetailRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetProductDetailReply)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Portal_GetProductList0_HTTP_Handler(srv PortalHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetProductListRequest
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, "/mall.portal.v1.Portal/GetProductList")
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetProductList(ctx, req.(*GetProductListRequest))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetProductListReply)
+		return ctx.Result(200, reply)
+	}
+}
+
 type PortalHTTPClient interface {
+	AddProduct(ctx context.Context, req *AddProductRequest, opts ...http.CallOption) (rsp *AddProductReply, err error)
+	GetProductDetail(ctx context.Context, req *GetProductDetailRequest, opts ...http.CallOption) (rsp *GetProductDetailReply, err error)
+	GetProductList(ctx context.Context, req *GetProductListRequest, opts ...http.CallOption) (rsp *GetProductListReply, err error)
 	GetUserList(ctx context.Context, req *GetUserListRequest, opts ...http.CallOption) (rsp *GetUserListReply, err error)
 	GetUserProfile(ctx context.Context, req *GetUserProfileRequest, opts ...http.CallOption) (rsp *UserProfileReply, err error)
 	Login(ctx context.Context, req *LoginRequest, opts ...http.CallOption) (rsp *LoginReply, err error)
 	Logout(ctx context.Context, req *LogoutRequest, opts ...http.CallOption) (rsp *LogoutReply, err error)
 	Register(ctx context.Context, req *RegisterRequest, opts ...http.CallOption) (rsp *RegisterReply, err error)
 	Update(ctx context.Context, req *UpdateRequest, opts ...http.CallOption) (rsp *UpdateReply, err error)
+	UpdateProduct(ctx context.Context, req *UpdateProductRequest, opts ...http.CallOption) (rsp *UpdateProductReply, err error)
 }
 
 type PortalHTTPClientImpl struct {
@@ -168,6 +259,45 @@ type PortalHTTPClientImpl struct {
 
 func NewPortalHTTPClient(client *http.Client) PortalHTTPClient {
 	return &PortalHTTPClientImpl{client}
+}
+
+func (c *PortalHTTPClientImpl) AddProduct(ctx context.Context, in *AddProductRequest, opts ...http.CallOption) (*AddProductReply, error) {
+	var out AddProductReply
+	pattern := "/v1/product/add"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/mall.portal.v1.Portal/AddProduct"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PortalHTTPClientImpl) GetProductDetail(ctx context.Context, in *GetProductDetailRequest, opts ...http.CallOption) (*GetProductDetailReply, error) {
+	var out GetProductDetailReply
+	pattern := "/v1/product/detail/{sku}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation("/mall.portal.v1.Portal/GetProductDetail"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PortalHTTPClientImpl) GetProductList(ctx context.Context, in *GetProductListRequest, opts ...http.CallOption) (*GetProductListReply, error) {
+	var out GetProductListReply
+	pattern := "/v1/product/list"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/mall.portal.v1.Portal/GetProductList"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
 }
 
 func (c *PortalHTTPClientImpl) GetUserList(ctx context.Context, in *GetUserListRequest, opts ...http.CallOption) (*GetUserListReply, error) {
@@ -242,6 +372,19 @@ func (c *PortalHTTPClientImpl) Update(ctx context.Context, in *UpdateRequest, op
 	opts = append(opts, http.Operation("/mall.portal.v1.Portal/Update"))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "PUT", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *PortalHTTPClientImpl) UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...http.CallOption) (*UpdateProductReply, error) {
+	var out UpdateProductReply
+	pattern := "/v1/product/update"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation("/mall.portal.v1.Portal/UpdateProduct"))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
 	if err != nil {
 		return nil, err
 	}

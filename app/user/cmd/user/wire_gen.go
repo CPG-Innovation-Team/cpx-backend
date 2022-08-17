@@ -7,11 +7,11 @@
 package main
 
 import (
-	"user/internal/biz"
-	"user/internal/conf"
-	"user/internal/data"
-	"user/internal/server"
-	"user/internal/service"
+	"cpx-backend/app/user/internal/biz"
+	"cpx-backend/app/user/internal/conf"
+	"cpx-backend/app/user/internal/data"
+	"cpx-backend/app/user/internal/server"
+	"cpx-backend/app/user/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -20,16 +20,18 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	dataData, cleanup, err := data.NewData(confData, logger)
+	db := data.NewDB(confData, logger)
+	client := data.NewRedis(confData, logger)
+	dataData, cleanup, err := data.NewData(logger, db, client)
 	if err != nil {
 		return nil, nil, err
 	}
-	greeterRepo := data.NewGreeterRepo(dataData, logger)
-	greeterUsecase := biz.NewGreeterUsecase(greeterRepo, logger)
-	greeterService := service.NewGreeterService(greeterUsecase)
-	grpcServer := server.NewGRPCServer(confServer, greeterService, logger)
-	httpServer := server.NewHTTPServer(confServer, greeterService, logger)
-	app := newApp(logger, grpcServer, httpServer)
+	retrieveRepo := data.NewRetrieveRepo(dataData, logger)
+	updateRepo := data.NewUpdateRepo(dataData, logger)
+	userUseCase := biz.NewUserUseCase(retrieveRepo, updateRepo, logger)
+	userService := service.NewUserService(userUseCase)
+	grpcServer := server.NewGRPCServer(confServer, userService, logger)
+	app := newApp(logger, grpcServer)
 	return app, func() {
 		cleanup()
 	}, nil

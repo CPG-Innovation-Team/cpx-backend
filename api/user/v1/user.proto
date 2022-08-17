@@ -8,142 +8,54 @@ option go_package = "cpx-backend/api/user/v1;v1";
 
 // The user service definition.
 service User {
-  // Register user
-  rpc Register (RegisterRequest) returns (RegisterReply) {
-    option (google.api.http) = {
-      post: "/user/v1/register",
-      body: "*",
-    };
-  }
+  // get user by email
+  rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserByEmailReply){}
 
-  // The user logs in
-  rpc Login (LoginRequest) returns (LoginReply) {
-    option (google.api.http) = {
-      post: "/user/v1/login",
-      body: "*",
-    };
-  }
+  // get user by uid
+  rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdReply){}
 
-  // The user logs out
-  rpc Logout (LogoutRequest) returns (LogoutReply) {
-    option (google.api.http) = {
-      post: "/user/v1/logout",
-      body: "*",
-    };
-  }
+  // get user list by uid
+  rpc GetUserListByUid(GetUserListRequest) returns (GetUserListReply){}
 
-  // Update user information
-  rpc Update (UpdateRequest) returns (UpdateReply) {
-    option (google.api.http) = {
-      put: "/user/v1/update",
-      body: "*",
-    };
-  }
+  rpc VerifyPassword(VerifyPasswordRequest)returns(VerifyPasswordReply){}
 
-  // Get Single User Profile
-  rpc GetUserProfile (GetUserProfileRequest) returns (UserProfileReply) {
-    option (google.api.http) = {
-      get: "/user/v1/profile/{uid}",
-    };
-  }
+  // Create user
+  rpc Create (CreateRequest) returns (CreateReply) {}
 
-  // List of users
-  rpc GetUserList (GetUserListRequest) returns (GetUserListReply) {
-    option (google.api.http) = {
-      post: "/user/v1/list",
-      body: "*",
-    };
-  }
+  // Update user
+  rpc Update (UpdateRequest) returns (UpdateReply) {}
+
 }
 
-// The request message of register.
-message RegisterRequest {
-  message User {
-    string name = 1;
-    string nickname = 2;
-
-    // 类型。1-用户；2-供应商；3-运营
-    uint64 type = 3;
-    string email = 4;
-    string password = 5;
-    string avatar = 6;
-
-    // 性别:0-保密;1-男;2-女;
-    uint64 gender = 7;
-    string introduce = 8;
-  }
-
-  User user = 1;
-}
-
-// The response message containing the user token and uid.
-message RegisterReply {
-  int64 uid = 1;
-  string token = 2;
-}
-
-// The request message containing the user email and password.
-message LoginRequest {
+message GetUserByEmailRequest {
   string email = 1;
-  string password = 2;
 }
 
-// The response message containing the user token and uid.
-message LoginReply {
+message GetUserByEmailReply {
   int64 uid = 1;
-  string token = 2;
+  string username = 2;
 }
 
-// The request message containing the user token.
-message LogoutRequest {
-  string token = 1;
-}
-
-// The response message is null.
-message LogoutReply {}
-
-// The request message of update user.
-message UpdateRequest {
-  message User {
-    string name = 1;
-    string nickname = 2;
-
-    // 类型。1-用户；2-供应商；3-运营
-    uint64 type = 3;
-    string email = 4;
-    string password = 5;
-    string avatar = 6;
-
-    // 性别:0-保密;1-男;2-女;
-    uint64 gender = 7;
-    string introduce = 8;
-  }
-
-  User user = 1;
-}
-
-// The response message containing the user token.
-message UpdateReply {
-  int64 uid = 1;
-  string token = 2;
-}
-
-// The request message of get single user profile.
-message GetUserProfileRequest {
+message GetUserByIdRequest {
   int64 uid = 1;
 }
 
-// The response message containing the user profile.
-message UserProfileReply {
+// The reply message of get user information.
+message GetUserByIdReply {
   message User {
     int64 uid = 1;
     string name = 2;
     string nickname = 3;
-    string avatar = 4;
+
+    // 类型。1-用户；2-供应商；3-运营
+    uint64 type = 4;
+    string email = 5;
+    string password = 6;
+    string avatar = 7;
 
     // 性别:0-保密;1-男;2-女;
-    uint64 gender = 5;
-    string introduce = 6;
+    uint64 gender = 8;
+    string introduce = 9;
   }
 
   User user = 1;
@@ -170,4 +82,127 @@ message GetUserListReply {
 
   repeated User user = 1;
   int64 type = 2;
+}
+
+message VerifyPasswordRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message VerifyPasswordReply {
+  bool ok = 1;
+  int64 uid = 2;
+}
+
+
+// The request message of Create.
+message CreateRequest {
+  message User {
+    string name = 1;
+    string nickname = 2;
+
+    // 类型。1-用户；2-供应商；3-运营
+    uint64 type = 3;
+    string email = 4;
+    string password = 5;
+    string avatar = 6;
+
+    // 性别:0-保密;1-男;2-女;
+    uint64 gender = 7;
+    string introduce = 8;
+  }
+
+  User user = 1;
+}
+
+// The response message containing the user uid.
+message CreateReply {
+  int64 uid = 1;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// The request message containing the user email and password.
+message LoginRequest {
+  string email = 1;
+  string password = 2;
+}
+
+// The response message containing the user token and uid.
+message LoginReply {
+  int64 uid = 1;
+  string token = 2;
+}
+
+// The request message containing the user token.
+message LogoutRequest {
+  string token = 1;
+}
+
+// The response message is null.
+message LogoutReply {}
+
+// The request message of update user.
+message UpdateRequest {
+  message User {
+    int64 uid = 1;
+    string name = 2;
+    string nickname = 3;
+
+    // 类型。1-用户；2-供应商；3-运营
+    uint64 type = 4;
+    string email = 5;
+    string password = 6;
+    string avatar = 7;
+
+    // 性别:0-保密;1-男;2-女;
+    uint64 gender = 8;
+    string introduce = 9;
+  }
+
+  User user = 1;
+}
+
+// The response message containing the user id.
+message UpdateReply {
+  bool ok = 1;
+  int64 uid = 2;
+}
+
+// The request message of get single user profile.
+message GetUserProfileRequest {
+  int64 uid = 1;
+}
+
+// The response message containing the user profile.
+message UserProfileReply {
+  message User {
+    int64 uid = 1;
+    string name = 2;
+    string nickname = 3;
+    string avatar = 4;
+
+    // 性别:0-保密;1-男;2-女;
+    uint64 gender = 5;
+    string introduce = 6;
+  }
+
+  User user = 1;
 }

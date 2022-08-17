@@ -4,9 +4,10 @@ import (
 	"cpx-backend/app/user/internal/conf"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-redis/redis/v8"
+	"github.com/google/wire"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	glogger "gorm.io/gorm/logger"
+	gLogger "gorm.io/gorm/logger"
 	"gorm.io/gorm/schema"
 )
 
@@ -43,7 +44,7 @@ func NewData(logger log.Logger, gormClient *gorm.DB, redisClient *redis.Client) 
 
 func NewDB(conf *conf.Data, logger log.Logger) *gorm.DB {
 	db, err := gorm.Open(mysql.Open(conf.Database.Source), &gorm.Config{
-		Logger: glogger.Default.LogMode(glogger.Info),
+		Logger: gLogger.Default.LogMode(gLogger.Info),
 		NamingStrategy: schema.NamingStrategy{
 			//表前缀
 			TablePrefix: conf.Database.Prefix,

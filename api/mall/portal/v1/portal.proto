@@ -54,6 +54,37 @@ service Portal {
       body: "*",
     };
   }
+
+  // Add Product
+  rpc AddProduct (AddProductRequest) returns (AddProductReply) {
+    option (google.api.http) = {
+      post: "/v1/product/add",
+      body: "*",
+    };
+  }
+
+  // Update Product
+  rpc UpdateProduct (UpdateProductRequest) returns (UpdateProductReply) {
+    option (google.api.http) = {
+      post: "/v1/product/update",
+      body: "*",
+    };
+  }
+
+  // Get Product Detail
+  rpc GetProductDetail (GetProductDetailRequest) returns (GetProductDetailReply) {
+    option (google.api.http) = {
+      get: "/v1/product/detail/{sku}",
+    };
+  }
+
+  // Get Product List
+  rpc GetProductList (GetProductListRequest) returns (GetProductListReply) {
+    option (google.api.http) = {
+      post: "/v1/product/list",
+      body: "*",
+    };
+  }
 }
 
 // The request message of register.
@@ -105,18 +136,19 @@ message LogoutReply {}
 // The request message of update user.
 message UpdateRequest {
   message User {
-    string name = 1;
-    string nickname = 2;
+    int64 uid = 1;
+    string name = 2;
+    string nickname = 3;
 
     // 类型。1-用户；2-供应商；3-运营
-    uint64 type = 3;
-    string email = 4;
-    string password = 5;
-    string avatar = 6;
+    uint64 type = 4;
+    string email = 5;
+    string password = 6;
+    string avatar = 7;
 
     // 性别:0-保密;1-男;2-女;
-    uint64 gender = 7;
-    string introduce = 8;
+    uint64 gender = 8;
+    string introduce = 9;
   }
 
   User user = 1;
@@ -170,4 +202,79 @@ message GetUserListReply {
 
   repeated User user = 1;
   int64 type = 2;
+}
+
+message AddProductRequest{
+  int64 sid = 1;
+  string name = 2;
+  double price = 3;
+  string cover = 4;
+  int64 type = 5;
+  int64 state = 6;
+}
+
+message AddProductReply{
+  int64 id = 1;
+  int64 sid = 2;
+  string sku = 3;
+  string name = 4;
+  double price = 5;
+  string cover = 6;
+  int64 type = 7;
+  int64 state = 8;
+}
+
+message UpdateProductRequest{
+  string sku = 1;
+  int64 sid = 2;
+  string name = 3;
+  double price = 4;
+  string cover = 5;
+  int64 type = 6;
+  int64 state = 7;
+}
+
+message UpdateProductReply{
+  int64 id = 1;
+  int64 sid = 2;
+  string sku = 3;
+  string name = 4;
+  double price = 5;
+  string cover = 6;
+  int64 type = 7;
+  int64 state = 8;
+}
+
+message GetProductDetailRequest{
+  string sku = 1;
+}
+
+message GetProductDetailReply{
+  int64 id = 1;
+  int64 sid = 2;
+  string sku = 3;
+  string name = 4;
+  double price = 5;
+  string cover = 6;
+  int64 type = 7;
+  int64 state = 8;
+}
+
+message GetProductListRequest{
+  repeated string sku = 1;
+}
+
+message GetProductListReply{
+  message Product{
+    int64 id = 1;
+    int64 sid = 2;
+    string sku = 3;
+    string name = 4;
+    double price = 5;
+    string cover = 6;
+    int64 type = 7;
+    int64 state = 8;
+  }
+
+  repeated Product product= 1;
 }

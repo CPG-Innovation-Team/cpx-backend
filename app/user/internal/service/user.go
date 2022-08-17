@@ -5,12 +5,8 @@ import (
 	"cpx-backend/api/user/v1"
 )
 
-type UserService struct {
-	v1.UnimplementedUserServer
-}
-
-func (s *UserService) Register(ctx context.Context, req *v1.RegisterRequest) (*v1.RegisterReply, error) {
-	return &v1.RegisterReply{}, nil
+func (s *UserService) Register(ctx context.Context, req *v1.CreateRequest) (*v1.CreateReply, error) {
+	return &v1.CreateReply{}, nil
 }
 func (s *UserService) Login(ctx context.Context, req *v1.LoginRequest) (*v1.LoginReply, error) {
 	return &v1.LoginReply{}, nil

@@ -8,7 +8,14 @@ import (
 // ProviderSet is biz providers.
 var ProviderSet = wire.NewSet(NewUserUseCase)
 
+// UserUseCase is a user use case.
+type UserUseCase struct {
+	rr  RetrieveRepo
+	ur  UpdateRepo
+	log *log.Helper
+}
+
 // NewUserUseCase new a user use case.
-func NewUserUseCase(rr RetrieveRepo, ur UpdateRepo, logger log.Logger) *UserUsecase {
-	return &UserUsecase{rr: rr, ur: ur, log: log.NewHelper(logger)}
+func NewUserUseCase(rr RetrieveRepo, ur UpdateRepo, logger log.Logger) *UserUseCase {
+	return &UserUseCase{rr: rr, ur: ur, log: log.NewHelper(logger)}
 }

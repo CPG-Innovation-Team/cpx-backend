@@ -14,23 +14,27 @@ import (
 	"cpx-backend/app/mall/portal/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
+	"go.opentelemetry.io/otel/sdk/trace"
 )
 
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, registry *conf.Registry, logger log.Logger) (*kratos.App, func(), error) {
+func wireApp(confServer *conf.Server, confData *conf.Data, registry *conf.Registry, auth *conf.Auth, logger log.Logger, tracerProvider *trace.TracerProvider) (*kratos.App, func(), error) {
 	discovery := data.NewDiscovery(registry)
-	portalClient := data.NewUserServiceClient(discovery)
-	dataData, err := data.NewData(confData, logger, portalClient)
+	productClient := data.NewProductServiceClient(discovery)
+	userClient := data.NewUserServiceClient(discovery)
+	dataData, err := data.NewData(confData, logger, productClient, userClient)
 	if err != nil {
 		return nil, nil, err
 	}
 	userRepo := data.NewUserRepo(dataData, logger)
-	userUseCase := biz.NewUserUseCase(userRepo, logger)
-	portalService := service.NewPortalService(userUseCase)
+	userUseCase := biz.NewUserUseCase(userRepo, auth, logger)
+	productRepo := data.NewProductRepo(dataData, logger)
+	productUseCase := biz.NewProductUseCase(productRepo, auth, logger)
+	portalService := service.NewPortalService(userUseCase, productUseCase, logger)
 	grpcServer := server.NewGRPCServer(confServer, portalService, logger)
-	httpServer := server.NewHTTPServer(confServer, portalService, logger)
+	httpServer := server.NewHTTPServer(confServer, auth, portalService, tracerProvider, logger)
 	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 	}, nil

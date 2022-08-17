@@ -30,6 +30,14 @@ type PortalClient interface {
 	GetUserProfile(ctx context.Context, in *GetUserProfileRequest, opts ...grpc.CallOption) (*UserProfileReply, error)
 	// List of users
 	GetUserList(ctx context.Context, in *GetUserListRequest, opts ...grpc.CallOption) (*GetUserListReply, error)
+	// Add Product
+	AddProduct(ctx context.Context, in *AddProductRequest, opts ...grpc.CallOption) (*AddProductReply, error)
+	// Update Product
+	UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductReply, error)
+	// Get Product Detail
+	GetProductDetail(ctx context.Context, in *GetProductDetailRequest, opts ...grpc.CallOption) (*GetProductDetailReply, error)
+	// Get Product List
+	GetProductList(ctx context.Context, in *GetProductListRequest, opts ...grpc.CallOption) (*GetProductListReply, error)
 }
 
 type portalClient struct {
@@ -94,6 +102,42 @@ func (c *portalClient) GetUserList(ctx context.Context, in *GetUserListRequest, 
 	return out, nil
 }
 
+func (c *portalClient) AddProduct(ctx context.Context, in *AddProductRequest, opts ...grpc.CallOption) (*AddProductReply, error) {
+	out := new(AddProductReply)
+	err := c.cc.Invoke(ctx, "/mall.portal.v1.Portal/AddProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *portalClient) UpdateProduct(ctx context.Context, in *UpdateProductRequest, opts ...grpc.CallOption) (*UpdateProductReply, error) {
+	out := new(UpdateProductReply)
+	err := c.cc.Invoke(ctx, "/mall.portal.v1.Portal/UpdateProduct", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *portalClient) GetProductDetail(ctx context.Context, in *GetProductDetailRequest, opts ...grpc.CallOption) (*GetProductDetailReply, error) {
+	out := new(GetProductDetailReply)
+	err := c.cc.Invoke(ctx, "/mall.portal.v1.Portal/GetProductDetail", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *portalClient) GetProductList(ctx context.Context, in *GetProductListRequest, opts ...grpc.CallOption) (*GetProductListReply, error) {
+	out := new(GetProductListReply)
+	err := c.cc.Invoke(ctx, "/mall.portal.v1.Portal/GetProductList", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PortalServer is the server API for Portal service.
 // All implementations must embed UnimplementedPortalServer
 // for forward compatibility
@@ -110,6 +154,14 @@ type PortalServer interface {
 	GetUserProfile(context.Context, *GetUserProfileRequest) (*UserProfileReply, error)
 	// List of users
 	GetUserList(context.Context, *GetUserListRequest) (*GetUserListReply, error)
+	// Add Product
+	AddProduct(context.Context, *AddProductRequest) (*AddProductReply, error)
+	// Update Product
+	UpdateProduct(context.Context, *UpdateProductRequest) (*UpdateProductReply, error)
+	// Get Product Detail
+	GetProductDetail(context.Context, *GetProductDetailRequest) (*GetProductDetailReply, error)
+	// Get Product List
+	GetProductList(context.Context, *GetProductListRequest) (*GetProductListReply, error)
 	mustEmbedUnimplementedPortalServer()
 }
 
@@ -134,6 +186,18 @@ func (UnimplementedPortalServer) GetUserProfile(context.Context, *GetUserProfile
 }
 func (UnimplementedPortalServer) GetUserList(context.Context, *GetUserListRequest) (*GetUserListReply, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
+}
+func (UnimplementedPortalServer) AddProduct(context.Context, *AddProductRequest) (*AddProductReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AddProduct not implemented")
+}
+func (UnimplementedPortalServer) UpdateProduct(context.Context, *UpdateProductRequest) (*UpdateProductReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateProduct not implemented")
+}
+func (UnimplementedPortalServer) GetProductDetail(context.Context, *GetProductDetailRequest) (*GetProductDetailReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProductDetail not implemented")
+}
+func (UnimplementedPortalServer) GetProductList(context.Context, *GetProductListRequest) (*GetProductListReply, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetProductList not implemented")
 }
 func (UnimplementedPortalServer) mustEmbedUnimplementedPortalServer() {}
 
@@ -256,6 +320,78 @@ func _Portal_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Portal_AddProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AddProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PortalServer).AddProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mall.portal.v1.Portal/AddProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PortalServer).AddProduct(ctx, req.(*AddProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Portal_UpdateProduct_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateProductRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PortalServer).UpdateProduct(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mall.portal.v1.Portal/UpdateProduct",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PortalServer).UpdateProduct(ctx, req.(*UpdateProductRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Portal_GetProductDetail_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductDetailRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PortalServer).GetProductDetail(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mall.portal.v1.Portal/GetProductDetail",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PortalServer).GetProductDetail(ctx, req.(*GetProductDetailRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Portal_GetProductList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetProductListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PortalServer).GetProductList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/mall.portal.v1.Portal/GetProductList",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PortalServer).GetProductList(ctx, req.(*GetProductListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // Portal_ServiceDesc is the grpc.ServiceDesc for Portal service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -286,6 +422,22 @@ var Portal_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserList",
 			Handler:    _Portal_GetUserList_Handler,
+		},
+		{
+			MethodName: "AddProduct",
+			Handler:    _Portal_AddProduct_Handler,
+		},
+		{
+			MethodName: "UpdateProduct",
+			Handler:    _Portal_UpdateProduct_Handler,
+		},
+		{
+			MethodName: "GetProductDetail",
+			Handler:    _Portal_GetProductDetail_Handler,
+		},
+		{
+			MethodName: "GetProductList",
+			Handler:    _Portal_GetProductList_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
