@@ -1,10 +1,10 @@
 package main
 
 import (
+	"cpx-backend/app/user/service/internal/conf"
 	"flag"
 	"os"
 
-	"cpx-backend/app/user/internal/conf"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/config"
 	"github.com/go-kratos/kratos/v2/config/file"

@@ -2,8 +2,8 @@ package biz
 
 import (
 	"context"
+	"cpx-backend/api/product/service/v1"
 
-	v1 "cpx-backend/api/product/v1"
 	"github.com/go-kratos/kratos/v2/errors"
 )
 

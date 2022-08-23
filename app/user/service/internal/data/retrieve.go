@@ -2,7 +2,7 @@ package data
 
 import (
 	"context"
-	"cpx-backend/app/user/internal/biz"
+	"cpx-backend/app/user/service/internal/biz"
 	"github.com/go-kratos/kratos/v2/log"
 )
 

@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"cpx-backend/api/user/v1"
+	"cpx-backend/api/user/service/v1"
 )
 
 func (s *UserService) Register(ctx context.Context, req *v1.CreateRequest) (*v1.CreateReply, error) {

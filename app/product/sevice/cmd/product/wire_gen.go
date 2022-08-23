@@ -7,11 +7,11 @@
 package main
 
 import (
-	"cpx-backend/app/product/internal/biz"
-	"cpx-backend/app/product/internal/conf"
-	"cpx-backend/app/product/internal/data"
-	"cpx-backend/app/product/internal/server"
-	"cpx-backend/app/product/internal/service"
+	"cpx-backend/app/product/sevice/internal/biz"
+	"cpx-backend/app/product/sevice/internal/conf"
+	data2 "cpx-backend/app/product/sevice/internal/data"
+	"cpx-backend/app/product/sevice/internal/server"
+	"cpx-backend/app/product/sevice/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )
@@ -20,13 +20,13 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	db := data.NewDB(confData, logger)
-	client := data.NewRedis(confData, logger)
-	dataData, cleanup, err := data.NewData(logger, db, client)
+	db := data2.NewDB(confData, logger)
+	client := data2.NewRedis(confData, logger)
+	dataData, cleanup, err := data2.NewData(logger, db, client)
 	if err != nil {
 		return nil, nil, err
 	}
-	productRepo := data.NewProductRepo(dataData, logger)
+	productRepo := data2.NewProductRepo(dataData, logger)
 	productUseCase := biz.NewProductUseCase(productRepo, logger)
 	productService := service.NewProductService(productUseCase)
 	grpcServer := server.NewGRPCServer(confServer, productService, logger)
