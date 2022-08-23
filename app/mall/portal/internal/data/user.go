@@ -2,9 +2,9 @@ package data
 
 import (
 	"context"
+	"cpx-backend/api/user/service/v1"
 	"github.com/jinzhu/copier"
 
-	"cpx-backend/api/user/v1"
 	"cpx-backend/app/mall/portal/internal/biz"
 	"github.com/go-kratos/kratos/v2/log"
 )

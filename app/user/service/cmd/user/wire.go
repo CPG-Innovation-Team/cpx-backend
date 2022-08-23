@@ -6,11 +6,11 @@
 package main
 
 import (
-	"cpx-backend/app/user/internal/biz"
-	"cpx-backend/app/user/internal/conf"
-	"cpx-backend/app/user/internal/data"
-	"cpx-backend/app/user/internal/server"
-	"cpx-backend/app/user/internal/service"
+	"cpx-backend/app/user/service/internal/biz"
+	"cpx-backend/app/user/service/internal/conf"
+	"cpx-backend/app/user/service/internal/data"
+	"cpx-backend/app/user/service/internal/server"
+	"cpx-backend/app/user/service/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/wire"

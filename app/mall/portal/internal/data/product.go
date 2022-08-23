@@ -1,7 +1,7 @@
 package data
 
 import (
-	productV1 "cpx-backend/api/product/v1"
+	productV1 "cpx-backend/api/product/service/v1"
 	"cpx-backend/app/mall/portal/internal/biz"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/jinzhu/copier"

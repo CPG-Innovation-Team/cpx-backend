@@ -1,8 +1,8 @@
 package data
 
 import (
-	productV1 "cpx-backend/api/product/v1"
-	userV1 "cpx-backend/api/user/v1"
+	productV1 "cpx-backend/api/product/service/v1"
+	userV1 "cpx-backend/api/user/service/v1"
 	"cpx-backend/app/mall/portal/internal/conf"
 	"github.com/go-kratos/kratos/contrib/registry/nacos/v2"
 	"github.com/go-kratos/kratos/v2/log"
@@ -22,7 +22,6 @@ var ProviderSet = wire.NewSet(
 	NewUserRepo,
 	NewProductRepo,
 	NewDiscovery,
-	NewRegistrar,
 	NewUserServiceClient,
 	NewProductServiceClient,
 )
@@ -46,10 +45,6 @@ func NewData(
 }
 
 func NewDiscovery(conf *conf.Registry) registry.Discovery {
-	sc := []constant.ServerConfig{
-		*constant.NewServerConfig(conf.Nacos.Address, 8848),
-	}
-
 	cc := &constant.ClientConfig{
 		NamespaceId:         "public",
 		TimeoutMs:           5000,
@@ -63,38 +58,7 @@ func NewDiscovery(conf *conf.Registry) registry.Discovery {
 
 	cli, err := clients.NewNamingClient(
 		vo.NacosClientParam{
-			ClientConfig:  cc,
-			ServerConfigs: sc,
-		},
-	)
-
-	if err != nil {
-		panic(err)
-	}
-
-	return nacos.New(cli)
-}
-
-func NewRegistrar(conf *conf.Registry) registry.Registrar {
-	sc := []constant.ServerConfig{
-		*constant.NewServerConfig(conf.Nacos.Address, 8848),
-	}
-
-	cc := &constant.ClientConfig{
-		NamespaceId:         "public",
-		TimeoutMs:           5000,
-		NotLoadCacheAtStart: true,
-		LogDir:              "/tmp/nacos/log",
-		CacheDir:            "/tmp/nacos/cache",
-		RotateTime:          "1h",
-		MaxAge:              3,
-		LogLevel:            "info",
-	}
-
-	cli, err := clients.NewNamingClient(
-		vo.NacosClientParam{
-			ClientConfig:  cc,
-			ServerConfigs: sc,
+			ClientConfig: cc,
 		},
 	)
 

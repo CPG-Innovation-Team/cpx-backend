@@ -213,5 +213,5 @@ var Product_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/product/v1/product.proto",
+	Metadata: "api/product/service/v1/product.proto",
 }

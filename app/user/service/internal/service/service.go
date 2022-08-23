@@ -1,8 +1,8 @@
 package service
 
 import (
-	v1 "cpx-backend/api/user/v1"
-	"cpx-backend/app/user/internal/biz"
+	"cpx-backend/api/user/service/v1"
+	"cpx-backend/app/user/service/internal/biz"
 	"github.com/google/wire"
 )
 
